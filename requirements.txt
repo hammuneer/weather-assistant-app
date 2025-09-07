@@ -1,0 +1,7 @@
+streamlit>=1.34
+requests>=2.32
+pydantic>=2.7
+pydantic-settings>=2.5
+python-dotenv>=1.0
+pandas>=2.2
+openai>=1.40
