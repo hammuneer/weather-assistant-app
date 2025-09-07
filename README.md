@@ -20,7 +20,7 @@ A conversational weather assistant built using the OpenAI GPT model and real-tim
 
 ## 📸 Sample UI Screenshot
 
-![Sample UI](screenshots/UI.png)
+![Sample UI](https://github.com/hammuneer/weather-assistant-app/blob/main/screenshots/UI.png)
 
 
 
