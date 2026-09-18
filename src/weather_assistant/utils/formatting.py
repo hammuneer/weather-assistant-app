@@ -1,4 +1,3 @@
-# weatherbot/utils/formatting.py
 from typing import Dict, Any
 
 def extract_core_metrics(payload: Dict[str, Any]) -> Dict[str, Any]:

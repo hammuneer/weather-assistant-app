@@ -1,0 +1,36 @@
+[project]
+name = "weather-assistant"
+version = "0.1.0"
+description = "A conversational Streamlit weather assistant: an LLM agent extracts the location from natural-language queries and WeatherAPI.com supplies live data."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+authors = [{ name = "Hamza Munir" }]
+dependencies = [
+    "streamlit>=1.34,<2",
+    "requests>=2.32,<3",
+    "pydantic>=2.7,<3",
+    "pydantic-settings>=2.5,<3",
+    "python-dotenv>=1.0,<2",
+    "pandas>=2.2,<3",
+    "openai>=1.40,<2",
+    "openai-agents>=0.2",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "pytest-asyncio>=0.23", "ruff>=0.6"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 100
+src = ["src"]

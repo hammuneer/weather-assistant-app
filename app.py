@@ -1,13 +1,12 @@
-# weatherbot/app.py
-import streamlit as st
-import pandas as pd
 import asyncio
 
+import pandas as pd
+import streamlit as st
 
-from services.weather_service import get_weather
-from agents_user.location_agent import extract_location_async
-from utils.formatting import extract_core_metrics
-from config import settings
+from weather_assistant.agent.location_agent import extract_location_async
+from weather_assistant.config import settings
+from weather_assistant.services.weather_service import get_weather
+from weather_assistant.utils.formatting import extract_core_metrics
 
 st.set_page_config(
     page_title="WeatherBot",

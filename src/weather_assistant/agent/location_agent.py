@@ -1,13 +1,12 @@
-# weather_agent.py
-
+import logging
 from typing import Optional
+
+from agents import Agent, ModelSettings, Runner
 from pydantic import BaseModel, Field
-import asyncio
 
-from agents import Agent, Runner, ModelSettings
+from weather_assistant.config import settings
 
-
-# ----- Agent Configuration -----
+logger = logging.getLogger(__name__)
 
 INSTRUCTIONS = (
     "You are a helpful weather assistant. Given a query, you need to extract the "
@@ -24,16 +23,14 @@ def build_agent() -> Agent:
     return Agent(
         name="WeatherAgent",
         instructions=INSTRUCTIONS,
-        model="gpt-4o-mini",
+        model=settings.OPENAI_MODEL,
         model_settings=ModelSettings(
-            temperature=0.5,
-            max_tokens=256,
+            temperature=settings.TEMPERATURE,
+            max_tokens=settings.MAX_TOKENS,
         ),
         output_type=LocationExtractor,
     )
 
-
-# ----- Async Interface -----
 
 async def extract_location_async(query: str) -> Optional[str]:
     """
@@ -50,6 +47,6 @@ async def extract_location_async(query: str) -> Optional[str]:
         result = await Runner.run(agent, query)
         if result and result.final_output:
             return result.final_output.location
-    except Exception as e:
-        print(f"[extract_location_async] Error: {e}")
+    except Exception:
+        logger.exception("Failed to extract location for query: %r", query)
     return None
