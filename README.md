@@ -1,115 +1,92 @@
-# 🌤️ Weather Assistant App
+# WeatherBot
 
-A conversational weather assistant built using the OpenAI GPT model and real-time data from [WeatherAPI.com](https://www.weatherapi.com/). Ask natural language questions like:
+A conversational weather assistant built with Streamlit. An LLM agent extracts the location from
+a natural-language query (e.g. *"Will it rain in London this weekend?"*), then
+[WeatherAPI.com](https://www.weatherapi.com/) supplies live current-conditions data, rendered as
+an interactive dashboard.
 
-> "What's the weather like in New York tomorrow?"  
-> "Will it rain in London this weekend?"  
-> "How windy is it in Tokyo right now?"
-
----
-
-## 🚀 Features
-
-- 🧠 Uses **OpenAI GPT-4o-mini** to understand natural language queries
-- 🌦️ Fetches live weather data from [WeatherAPI.com](https://www.weatherapi.com/)
-- 💬 Provides friendly and contextual responses
-- 💻 Simple and clean terminal or web-based UI (customizable)
-- 🔐 Uses `.env` file to securely load API keys
-
----
-
-## 📸 Sample UI Screenshot
+## Sample UI
 
 ![Sample UI](screenshots/UI.PNG)
 
+## How it works
 
+```
+User query ("What's the weather in Lahore right now?")
+        │
+        ▼
+extract_location_async (weather_assistant.agent.location_agent)
+        │  OpenAI Agents SDK — structured output: {"location": "..."}
+        ▼
+get_weather (weather_assistant.services.weather_service)
+        │  WeatherAPI.com current.json
+        ▼
+extract_core_metrics (weather_assistant.utils.formatting)
+        │
+        ▼
+Streamlit dashboard (app.py): overview / wind / air & sun / map / raw JSON tabs
+```
 
-## ⚙️ Setup Instructions
+If the location agent can't extract a location (or `OPENAI_API_KEY` isn't set), the app falls back
+to `DEFAULT_LOCATION` from settings.
 
-### 1. Clone the Repository
+## Project structure
+
+```
+.
+├── app.py                          # Streamlit entry point (UI + tabs)
+├── src/weather_assistant/
+│   ├── config.py                   # pydantic-settings, loads .env
+│   ├── agent/
+│   │   └── location_agent.py       # OpenAI Agents SDK: query -> location
+│   ├── services/
+│   │   └── weather_service.py      # WeatherAPI.com client
+│   └── utils/
+│       └── formatting.py           # flattens the WeatherAPI payload
+├── tests/
+├── pyproject.toml
+└── requirements.txt
+```
+
+## Getting started
+
+### Prerequisites
+
+- Python 3.10+
+- A [WeatherAPI.com](https://www.weatherapi.com/) API key (required)
+- An [OpenAI API key](https://platform.openai.com/api-keys) (optional — without it, location
+  extraction is skipped and `DEFAULT_LOCATION` is used for every query)
+
+### Installation
 
 ```bash
 git clone https://github.com/hammuneer/weather-assistant-app.git
 cd weather-assistant-app
+python -m venv .venv && source .venv/bin/activate
+pip install -e ".[dev]"
 ```
 
-
-
-### 2. Create and Activate Virtual Environment
+### Configuration
 
 ```bash
-python -m venv openai_env
-# Windows
-openai_env\Scripts\activate
-# macOS/Linux
-source openai_env/bin/activate
+cp .env.example .env
+# then edit .env: set WEATHER_API_KEY (required) and OPENAI_API_KEY (optional)
 ```
 
-### 3. Install Dependencies
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Create .env File
-```bash
-OPENAI_API_KEY=your-openai-key
-WEATHER_API_KEY=your-weatherapi-key
-```
-
-# 🧩 Dependencies
-hese will be installed via requirements.txt, but for reference:
-```bash
-
-openai
-requests
-python-dotenv
-flask                 # (if using web UI)
-streamlit             # (optional alternative UI)
-
-```
-
-
-# 🧠 OpenAI Model
-
-This app uses the GPT-4o-mini model via OpenAI’s API.
-You can configure the model inside your agent or script like:
-```bash
-openai.ChatCompletion.create(
-    model="gpt-4",  # or "gpt-3.5-turbo"
-    messages=[...]
-)
-```
-
-# 🌍 Weather API
-
-Powered by WeatherAPI.com, offering:
-
-- Current weather
-- Forecast up to 14 days
-- Alerts
-- Historical weather
-- Astronomy (sunrise/sunset, moon, etc.)
-Example API call:
+### Run
 
 ```bash
-https://api.weatherapi.com/v1/forecast.json?key=YOUR_API_KEY&q=London&days=3
+streamlit run app.py
 ```
 
+Open the local URL Streamlit prints (default: http://localhost:8501).
 
-# 📄 License
+## Testing
 
-MIT License
+```bash
+pytest
+```
 
+## License
 
-# 🙋‍♂️ Author
-
-Hammuneer
-GitHub: @hammuneer
-
-# Kaggle 
-
-Follow: https://www.kaggle.com/hammuneer
-
-# LinkedIn
-
-Follow: https://www.linkedin.com/in/hammuneer123/
+See [LICENSE](LICENSE).
